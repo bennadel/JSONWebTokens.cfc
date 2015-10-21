@@ -1,0 +1,343 @@
+body {
+  background-color: #FFFFFF ;
+  color: #333333 ;
+  font-family: "lucida sans unicode", "lucida grande", sans-serif;
+  margin: 0px 0px 0px 0px ;
+}
+form {
+  margin: 0px 0px 0px 0px ;
+}
+div.siteInfo {
+  background-color: #161616 ;
+  color: #C4CBCE ;
+  font-size: 14px ;
+  font-weight: 100 ;
+  height: 30px ;
+  line-height: 30px ;
+  position: relative ;
+}
+div.siteInfo a.name {
+  color: #C4CBCE ;
+  left: 20px ;
+  position: absolute ;
+  text-decoration: none ;
+  text-transform: uppercase ;
+  top: 0px ;
+  z-index: 2 ;
+}
+div.siteInfo a.name:hover {
+  text-decoration: underline ;
+}
+div.siteInfo span.tddMentality {
+  display: block ;
+  text-align: center ;
+  text-transform: uppercase ;
+}
+div.siteInfo span.author {
+  position: absolute ;
+  right: 20px ;
+  top: 0px ;
+  z-index: 2 ;
+}
+div.siteInfo span.author a {
+  color: inherit ;
+  text-decoration: none ;
+  text-transform: uppercase ;
+}
+div.siteInfo span.author a:hover {
+  text-decoration: underline ;
+}
+div.testStatus {
+  border-bottom: 30px solid #EDF3F3 ;
+  margin-bottom: 30px ;
+}
+div.testStatus button.callToAction {
+  border: none ;
+  cursor: pointer ;
+  display: block ;
+  margin: 0px 0px 0px 0px ;
+  padding: 70px 0px 75px 0px ;
+  text-align: center ;
+  width: 100% ;
+}
+div.testStatus button.callToAction div.subtitle {
+  font-size: 22px ;
+  font-family: "arial black", gadget, sans-serif;
+  height: 27px ;
+  line-height: 27px ;
+  margin: 0px auto 30px auto ;
+  position: relative ;
+  text-transform: uppercase ;
+  width: 650px ;
+}
+div.testStatus button.callToAction div.subtitle:before {
+  content: "";
+  height: 1px ;
+  left: 0px ;
+  position: absolute ;
+  right: 0px ;
+  top: 15px ;
+}
+div.testStatus button.callToAction div.subtitle span {
+  display: inline-block;
+  padding: 0px 20px 0px 20px ;
+  position: relative ;
+  z-index: 2 ;
+}
+div.testStatus button.callToAction div.status {
+  color: #FFFFFF ;
+  font-family: "arial black", gadget, sans-serif;
+  font-size: 135px ;
+  line-height: 135px ;
+  margin: 0px 0px 35px 0px ;
+  text-transform: uppercase ;
+}
+div.testStatus button.callToAction div.button {
+  -webkit-border-radius: 6px 6px 6px 6px;
+  -moz-border-radius: 6px 6px 6px 6px;
+  border-radius: 6px 6px 6px 6px;
+  display: inline-block;
+  font-size: 22px ;
+  font-weight: bold ;
+  line-height: 25px ;
+  padding: 20px 25px 20px 25px ;
+}
+div.testStatus button.callToAction div.errorInfo {
+  margin: 0px auto 0px auto ;
+  padding-top: 40px ;
+  width: 650px ;
+}
+div.testStatus button.callToAction div.errorInfo div.subtitle {
+  margin-bottom: 35px ;
+}
+div.testStatus button.callToAction div.errorInfo div.file {
+  font-size: 20px ;
+  font-weight: bold ;
+  line-height: 25px ;
+  margin-bottom: 15px ;
+}
+div.testStatus button.callToAction div.errorInfo div.message {
+  font-size: 20px ;
+  line-height: 25px ;
+}
+div.testStatus.start button.callToAction {
+  background-color: #709DB0 ;
+}
+div.testStatus.start button.callToAction div.subtitle {
+  color: #121A1D ;
+}
+div.testStatus.start button.callToAction div.subtitle:before {
+  background-color: #5E8494 ;
+}
+div.testStatus.start button.callToAction div.subtitle span {
+  background-color: #709DB0 ;
+}
+div.testStatus.start button.callToAction div.button {
+  background-color: #FFC618 ;
+}
+div.testStatus.pass button.callToAction {
+  background-color: #88934B ;
+}
+div.testStatus.pass button.callToAction div.subtitle {
+  color: #181A0C ;
+}
+div.testStatus.pass button.callToAction div.subtitle:before {
+  background-color: #6F783D ;
+}
+div.testStatus.pass button.callToAction div.subtitle span {
+  background-color: #88934B ;
+}
+div.testStatus.pass button.callToAction div.button {
+  background-color: #FFC618 ;
+}
+div.testStatus.fail button.callToAction {
+  background-color: #B75757 ;
+}
+div.testStatus.fail button.callToAction div.subtitle {
+  color: #221010 ;
+}
+div.testStatus.fail button.callToAction div.subtitle:before {
+  background-color: #993300 ;
+}
+div.testStatus.fail button.callToAction div.subtitle span {
+  background-color: #B75757 ;
+}
+div.testStatus.fail button.callToAction div.button {
+  background-color: #FFC618 ;
+}
+div.testStatus.fail div.errorInfo div.file {
+  color: #FFFFFF ;
+}
+div.testStatus.fail div.errorInfo div.message {
+  color: #FFFFFF ;
+}
+div.testList {
+  margin: 0px auto 100px auto ;
+  width: 650px ;
+}
+div.testList div.header {
+  margin-bottom: 30px ;
+  position: relative ;
+}
+div.testList div.header div.title {
+  font-family: "arial black", gadget, sans-serif;
+  font-size: 22px ;
+  line-height: 27px ;
+}
+div.testList div.header div.title span.text {
+  text-transform: uppercase ;
+}
+div.testList div.header .selectAll {
+  color: #999999 ;
+  display: inline-block;
+  font-family: "lucida sans unicode", "lucida grande", sans-serif;
+  font-size: 13px ;
+  line-height: 27px ;
+  vertical-align: middle ;
+}
+div.testList div.header .selectAll a {
+  color: #999999 ;
+}
+div.testList div.header input.filter {
+  border: 1px solid #999999 ;
+  -webkit-border-radius: 3px 3px 3px 3px;
+  -moz-border-radius: 3px 3px 3px 3px;
+  border-radius: 3px 3px 3px 3px;
+  font-size: 16px ;
+  padding: 4px 0px 4px 3px ;
+  position: absolute ;
+  right: 0px ;
+  top: -2px;
+  width: 180px ;
+}
+div.testList div.header input.filter:-moz-placeholder {
+  color: #aaaaaa;
+  font-style: italic;
+  font-weight: 100 ;
+}
+div.testList div.header input.filter::-moz-placeholder {
+  color: #aaaaaa;
+  font-style: italic;
+  font-weight: 100 ;
+}
+div.testList div.header input.filter:-ms-input-placeholder {
+  color: #aaaaaa;
+  font-style: italic;
+  font-weight: 100 ;
+}
+div.testList div.header input.filter::-webkit-input-placeholder {
+  color: #aaaaaa;
+  font-style: italic;
+  font-weight: 100 ;
+}
+div.testList ol.tests {
+  font-size: 16px ;
+  font-weight: 100 ;
+  line-height: 25px ;
+  list-style-type: none ;
+  margin: 0px 0px 30px 0px ;
+  padding: 0px 0px 0px 0px ;
+}
+div.testList ol.tests li.test {
+  background-color: #F5F5F5 ;
+  margin-bottom: 2px ;
+}
+div.testList ol.tests li.test:hover {
+  background-color: #E5E5E5 ;
+}
+div.testList ol.tests li.test:first-child {
+  -webkit-border-radius: 4px 4px 0px 0px;
+  -moz-border-radius: 4px 4px 0px 0px;
+  border-radius: 4px 4px 0px 0px;
+}
+div.testList ol.tests li.test:last-child {
+  -webkit-border-radius: 0px 0px 4px 4px;
+  -moz-border-radius: 0px 0px 4px 4px;
+  border-radius: 0px 0px 4px 4px;
+}
+div.testList ol.tests li.test:first-child:last-child {
+  -webkit-border-radius: 4px 4px 4px 4px;
+  -moz-border-radius: 4px 4px 4px 4px;
+  border-radius: 4px 4px 4px 4px;
+}
+div.testList ol.tests label {
+  cursor: pointer ;
+  display: block ;
+  padding: 5px 5px 4px 5px ;
+}
+div.testList ol.tests input {
+  display: inline-block;
+  margin-right: 7px ;
+  vertical-align: middle ;
+}
+div.noTestList {
+  color: #CC1717 ;
+  font-size: 22px ;
+  line-height: 40px ;
+  margin: 0px 20px 100px 20px ;
+  text-align: center ;
+  font-style: italic ;
+}
+div.noTestList a {
+  border-bottom: 1px dotted #CC1717 ;
+  color: #CC1717 ;
+  text-decoration: none ;
+}
+label.autorun {
+  background-color: #F0F0F0 ;
+  -webkit-border-radius: 0px 4px 0px 0px;
+  -moz-border-radius: 0px 4px 0px 0px;
+  border-radius: 0px 4px 0px 0px;
+  bottom: 0px ;
+  color: #666666 ;
+  cursor: pointer ;
+  font-size: 11px ;
+  left: 0px ;
+  line-height: 15px ;
+  padding: 4px 12px 3px 3px ;
+  position: fixed ;
+  z-index: 2 ;
+}
+label.autorun:hover {
+  background-color: #333333 ;
+  color: #FFFFFF ;
+}
+label.autorun.on {
+  background-color: #333333 ;
+  color: #FFFFFF ;
+}
+div.processingOverlay {
+  background-color: rgba(255, 255, 255, 0.95);
+  bottom: 0px ;
+  display: none ;
+  left: 0px ;
+  position: fixed ;
+  right: 0px ;
+  top: 0px ;
+  z-index: 101 ;
+}
+div.processingOverlay div.message {
+  background-color: #709DB0 ;
+  -webkit-border-radius: 7px 7px 7px 7px;
+  -moz-border-radius: 7px 7px 7px 7px;
+  border-radius: 7px 7px 7px 7px;
+  color: #FFFFFF ;
+  left: 50% ;
+  margin: -48px 0px 0px -192px;
+  padding: 18px 0px 18px 0px ;
+  position: absolute ;
+  text-align: center ;
+  top: 50% ;
+  width: 385px ;
+}
+div.processingOverlay div.plan {
+  font-size: 22px ;
+  font-family: "arial black", gadget, sans-serif;
+  line-height: 27px ;
+  margin: 0px 0px 8px 0px ;
+  text-transform: uppercase ;
+}
+div.processingOverlay div.patience {
+  font-size: 16px ;
+  line-height: 21px ;
+}

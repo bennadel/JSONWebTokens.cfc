@@ -1,0 +1,453 @@
+
+// -- Mixins ------------------------------------------------ //
+
+
+// Border Radius
+.border-radius( @radius ) {
+	-webkit-border-radius: @radius ;
+	   -moz-border-radius: @radius ;
+	        border-radius: @radius ;
+}
+
+// Drop shadows
+.box-shadow( @shadow ) {
+	-webkit-box-shadow: @shadow ;
+	   -moz-box-shadow: @shadow ;
+	        box-shadow: @shadow ;
+}
+
+.font-family-default() {
+	font-family: "lucida sans unicode", "lucida grande", sans-serif ;
+}
+
+.font-family-heavy() {
+	font-family: "arial black", gadget, sans-serif ;
+}
+
+.opacity( @opacity ) {
+	opacity: @opacity / 100 ;
+	filter: ~"alpha( opacity=@{opacity} )" ;
+}
+
+.placeholder( @color: #AAAAAA, @font-style: italic ) {
+	&:-moz-placeholder {
+		color: @color ;
+		font-style: @font-style ;
+		font-weight: 100 ;
+	}
+
+	&::-moz-placeholder {
+		color: @color ;
+		font-style: @font-style ;
+		font-weight: 100 ;
+	}
+	
+	&:-ms-input-placeholder {
+		color: @color ;
+		font-style: @font-style ;
+		font-weight: 100 ;
+	}
+	
+	&::-webkit-input-placeholder {
+		color: @color ;
+		font-style: @font-style ;
+		font-weight: 100 ;
+	}
+}
+
+.user-select( @select ) {
+	-webkit-user-select: @select ;
+	   -moz-user-select: @select ;
+	    -ms-user-select: @select ;
+	     -o-user-select: @select ;
+	        user-select: @select ;
+}
+
+
+// -- Core -------------------------------------------------- //
+
+
+body {
+	background-color: #FFFFFF ;
+	color: #333333 ;
+	.font-family-default ;
+	margin: 0px 0px 0px 0px ;
+}
+
+form {
+	margin: 0px 0px 0px 0px ;
+}
+
+div.siteInfo {
+	background-color: #161616 ;
+	color: #C4CBCE ;
+	font-size: 14px ;
+	font-weight: 100 ;
+	height: 30px ;
+	line-height: 30px ;
+	position: relative ;
+
+	a.name {
+		color: #C4CBCE ;
+		left: 20px ;
+		position: absolute ;
+		text-decoration: none ;
+		text-transform: uppercase ;
+		top: 0px ;
+		z-index: 2 ;
+
+		&:hover {
+			text-decoration: underline ;
+		}
+	}
+
+	span.tddMentality {
+		display: block ;
+		text-align: center ;
+		text-transform: uppercase ;
+	}
+
+	span.author {
+		position: absolute ;
+		right: 20px ;
+		top: 0px ;
+		z-index: 2 ;
+
+		a {
+			color: inherit ;
+			text-decoration: none ;
+			text-transform: uppercase ;
+
+			&:hover {
+				text-decoration: underline ;
+			}
+		}
+	}
+}
+
+div.testStatus {
+	border-bottom: 30px solid #EDF3F3 ;
+	margin-bottom: 30px ;
+
+	button.callToAction {
+		border: none ;
+		cursor: pointer ;
+		display: block ;
+		margin: 0px 0px 0px 0px ;
+		padding: 70px 0px 75px 0px ;
+		text-align: center ;
+		width: 100% ;
+
+		div.subtitle {
+			font-size: 22px ;
+			.font-family-heavy ;
+			height: 27px ;
+			line-height: 27px ;
+			margin: 0px auto 30px auto ;
+			position: relative ;
+			text-transform: uppercase ;
+			width: 650px ;
+
+			&:before {
+				content: "" ;
+				height: 1px ;
+				left: 0px ;
+				position: absolute ;
+				right: 0px ;
+				top: 15px ;
+			}
+
+			span {
+				display: inline-block ;
+				padding: 0px 20px 0px 20px ;
+				position: relative ; 			// Needed for proper zIndex ordering.
+				z-index: 2 ;
+			}
+		}
+
+		div.status {
+			color: #FFFFFF ;
+			.font-family-heavy ;
+			font-size: 135px ;
+			line-height: 135px ;
+			margin: 0px 0px 35px 0px ;
+			text-transform: uppercase ;
+		}
+
+		div.button {
+			.border-radius( 6px 6px 6px 6px ) ;
+			display: inline-block ;
+			font-size: 22px ;
+			font-weight: bold ;
+			line-height: 25px ;
+			padding: 20px 25px 20px 25px ;
+		}
+
+		div.errorInfo {
+			margin: 0px auto 0px auto ;
+			padding-top: 40px ;
+			width: 650px ;
+
+			div.subtitle {
+				margin-bottom: 35px ;
+			}
+
+			div.file {
+				font-size: 20px ;
+				font-weight: bold ;
+				line-height: 25px ;
+				margin-bottom: 15px ;
+			}
+
+			div.message {
+				font-size: 20px ;
+				line-height: 25px ;
+			}
+		}
+	}
+
+	// div.testStatus -- variations.
+
+	&.start {
+		button.callToAction {
+			background-color: #709DB0 ;
+
+			div.subtitle {
+				color: #121A1D ;
+
+				&:before {
+					background-color: #5E8494 ;
+				}
+
+				span {
+					background-color: #709DB0 ;
+				}
+			}
+
+			div.button {
+				background-color: #FFC618 ;
+			}
+		}
+	}
+
+	&.pass {
+		button.callToAction {
+			background-color: #88934B ;
+
+			div.subtitle {
+				color: #181A0C ;
+
+				&:before {
+					background-color: #6F783D ;
+				}
+
+				span {
+					background-color: #88934B ;
+				}
+			}
+
+			div.button {
+				background-color: #FFC618 ;
+			}
+		}
+	}
+
+	&.fail {
+		button.callToAction {
+			background-color: #B75757 ;
+
+			div.subtitle {
+				color: #221010 ;
+
+				&:before {
+					background-color: #993300 ;
+				}
+
+				span {
+					background-color: #B75757 ;
+				}
+			}
+
+			div.button {
+				background-color: #FFC618 ;
+			}
+		}
+
+		div.errorInfo {
+			div.file {
+				color: #FFFFFF ;
+			}
+
+			div.message {
+				color: #FFFFFF ;
+			}
+		}
+	}
+} // END: div.testStatus
+
+div.testList {
+	margin: 0px auto 100px auto ;
+	width: 650px ;
+
+	div.header {
+		margin-bottom: 30px ;
+		position: relative ;
+
+		div.title {
+			.font-family-heavy ;
+			font-size: 22px ;
+			line-height: 27px ;
+
+			span.text {
+				text-transform: uppercase ;
+			}
+		}
+
+		.selectAll {
+			color: #999999 ;
+			display: inline-block ;
+			.font-family-default ;
+			font-size: 13px ;
+			line-height: 27px ;
+			vertical-align: middle ;
+
+			a {
+				color: #999999 ;
+			}
+		}
+
+		input.filter {
+			border: 1px solid #999999 ;
+			.border-radius( 3px 3px 3px 3px ) ;
+			font-size: 16px ;
+			padding: 4px 0px 4px 3px ;
+			.placeholder ;
+			position: absolute ;
+			right: 0px ;
+			top: -2px ;
+			width: 180px ;
+		}
+	}
+
+	ol.tests {
+		font-size: 16px ;
+		font-weight: 100 ;
+		line-height: 25px ;
+		list-style-type: none ;
+		margin: 0px 0px 30px 0px ;
+		padding: 0px 0px 0px 0px ;
+
+		li.test {
+			background-color: #F5F5F5 ;
+			margin-bottom: 2px ;
+
+			&:hover {
+				background-color: #E5E5E5 ;
+			}
+
+			// li.test -- variations.
+
+			&:first-child {
+				.border-radius( 4px 4px 0px 0px ) ;
+			}
+
+			&:last-child {
+				.border-radius( 0px 0px 4px 4px ) ;
+			}
+
+			&:first-child:last-child {
+				.border-radius( 4px 4px 4px 4px ) ;
+			}
+		}
+
+		label {
+			cursor: pointer ;
+			display: block ;
+			padding: 5px 5px 4px 5px ;
+		}
+
+		input {
+			display: inline-block ;
+			margin-right: 7px ;
+			vertical-align: middle ;
+		}
+	}
+} // END: div.testList
+
+div.noTestList {
+	color: #CC1717 ;
+	font-size: 22px ;
+	line-height: 40px ;
+	margin: 0px 20px 100px 20px ;
+	text-align: center ;
+	font-style: italic ;
+	
+	a {
+		border-bottom: 1px dotted #CC1717 ; 
+		color: #CC1717 ;
+		text-decoration: none ;
+	}
+} // END: div.noTestList
+
+label.autorun {
+	background-color: #F0F0F0 ;
+	.border-radius( 0px 4px 0px 0px ) ;
+	bottom: 0px ;
+	color: #666666 ;
+	cursor: pointer ;
+	font-size: 11px ;
+	left: 0px ;
+	line-height: 15px ;
+	padding: 4px 12px 3px 3px ;
+	position: fixed ;
+	z-index: 2 ;
+
+	&:hover {
+		background-color: #333333 ;
+		color: #FFFFFF ;
+	}
+
+	// label.autorun -- variations.
+
+	&.on {
+		background-color: #333333 ;
+		color: #FFFFFF ;
+	}
+}
+
+div.processingOverlay {
+	background-color: rgba( 255, 255, 255, .95 ) ;
+	bottom: 0px ;
+	display: none ;
+	left: 0px ;
+	position: fixed ;
+	right: 0px ;
+	top: 0px ;
+	z-index: 101 ;
+
+	div.message {
+		background-color: #709DB0 ;
+		.border-radius( 7px 7px 7px 7px ) ;
+		color: #FFFFFF ;
+		left: 50% ;
+		margin: -48px 0px 0px -192px ;
+		padding: 18px 0px 18px 0px ;
+		position: absolute ;
+		text-align: center ;
+		top: 50% ;
+		width: 385px ;
+	}
+
+	div.plan {
+		font-size: 22px ;
+		.font-family-heavy ;
+		line-height: 27px ;
+		margin: 0px 0px 8px 0px ;
+		text-transform: uppercase ;
+	}
+
+	div.patience {
+		font-size: 16px ;
+		line-height: 21px ;
+	}
+} // END: div.processingOverlay
