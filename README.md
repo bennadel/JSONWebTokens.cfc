@@ -1,5 +1,5 @@
 
-# ColdFusion Gateway For JSON Web Tokens
+# JSONWebTokens.cfc - A ColdFusion Gateway For JSON Web Tokens
 
 by [Ben Nadel][1] (on [Google+][2])
 
@@ -14,7 +14,8 @@ var jwtToken = jwt.encode( somePayload, "my-secret-key" );
 var payload = jwt.decode( jwtToken, "my-secret-key" );
 ```
 
-_NOTE: Each of the above methods takes an optional algorithm specification._
+_NOTE: Each of the above methods takes an optional algorithm specification (defaults 
+to HS256)._
 
 Or, if you intend to use the same encoding and decoding methods over and over again in
 a particular application, it can be more efficient to instantiate and cache a JSON Web 
