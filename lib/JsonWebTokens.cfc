@@ -38,14 +38,14 @@ component
 		string algorithm = DEFAULT_ALGORITHM
 		) {
 
-		var client = new client.JsonWebTokensClient(
+		var oClient = new client.JsonWebTokensClient(
 			new encode.JsonEncoder(),
 			new encode.Base64urlEncoder(),
 			key,
 			algorithm
 		);
 
-		return( client );
+		return( oClient );
 
 	}
 

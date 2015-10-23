@@ -6,7 +6,7 @@ component
 
 	public void function test_that_the_client_works() {
 
-		var client = new lib.JsonWebTokens().createClient( "secret", "HS256" );
+		var oClient = new lib.JsonWebTokens().createClient( "secret", "HS256" );
 
 		// NOTE: Values pulled from http://jwt.io/
 		var payload = {
@@ -18,8 +18,8 @@ component
 		// NOTE: Because we the order of the serialized keys affects the token, it's hard 
 		// to consistently test the encoded value. But, we can test the full life-cycle 
 		// and ensure that the decoded value matches the original input.
-		var token = client.encode( payload );
-		var newPayload = client.decode( token );
+		var token = oClient.encode( payload );
+		var newPayload = oClient.decode( token );
 
 		assert( payload.sub == newPayload.sub );
 		assert( payload.name == newPayload.name );
@@ -73,7 +73,7 @@ component
 		// Try it for each supported algorithm.
 		for ( algorithm in algorithms ) {
 
-			var client = new lib.JsonWebTokens().createClient( "secret", algorithm );
+			var oClient = new lib.JsonWebTokens().createClient( "secret", algorithm );
 
 			var payload = {
 				"id": 4,
@@ -89,8 +89,8 @@ component
 			// NOTE: Because we the order of the serialized keys affects the token, it's hard 
 			// to consistently test the encoded value. But, we can test the full life-cycle 
 			// and ensure that the decoded value matches the original input.
-			var token = client.encode( payload );
-			var newPayload = client.decode( token );
+			var token = oClient.encode( payload );
+			var newPayload = oClient.decode( token );
 
 			assert( payload.id == newPayload.id );
 			assert( payload.name == newPayload.name );
@@ -108,12 +108,12 @@ component
 
 	public void function test_complex_data_decoding() {
 
-		var client = new lib.JsonWebTokens().createClient( "secret", "HS256" );
+		var oClient = new lib.JsonWebTokens().createClient( "secret", "HS256" );
 
 		// NOTE: Because we the order of the serialized keys affects the token, it's hard 
 		// to consistently test the encoded value. But, we can test that the decoded value
 		// matches a known encoded token.
-		var newPayload = client.decode( "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwibmFtZSI6IktpbSBTbWl0aCIsImxpa2VzIjpbIk1vdmllcyIsIldhbGtzIiwiRm9vZCJdLCJzdHJlbmd0aHMiOnsia2luZG5lc3MiOjcsInF1aXJraW5lc3MiOjksImZ1biI6MTB9fQ.QKkMlaC0mSCryIwcmI7sIJ_WfY6n0a8DmkjJYajk100" );
+		var newPayload = oClient.decode( "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwibmFtZSI6IktpbSBTbWl0aCIsImxpa2VzIjpbIk1vdmllcyIsIldhbGtzIiwiRm9vZCJdLCJzdHJlbmd0aHMiOnsia2luZG5lc3MiOjcsInF1aXJraW5lc3MiOjksImZ1biI6MTB9fQ.QKkMlaC0mSCryIwcmI7sIJ_WfY6n0a8DmkjJYajk100" );
 
 		var expectedPayload = {
 			"id": 4,

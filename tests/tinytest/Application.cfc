@@ -52,7 +52,9 @@ component
 	private string function evaluatePathTraversal( required string traversal ) {
 
 		var currentDirectory = createObject( "java", "java.net.URI" ).init(
-			javaCast( "string", this.mappings[ "/tinytest" ] )
+			javaCast( "string", 
+				replace(this.mappings[ "/tinytest" ],'\','/','all')
+			)
 		);
 
 		var parentDirectory = currentDirectory.resolve( javaCast( "string", "../" ) );
