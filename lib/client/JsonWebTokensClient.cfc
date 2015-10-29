@@ -3,48 +3,43 @@ component
 	hint = "I provide encoding and decoding methods for JSON Web Tokens (JWT)."
 	{
 
-	// These values are based on the algorithm names from the Java standard naming 
-	// documentation for hashing, digesting, and signing security methods.
+	// I map the Java algorithm names onto the common JWT algorithm names.
 	// --
 	// Read More: http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html
-	algorithms = {
-		HS256 = "HmacSHA256",
-		HS384 = "HmacSHA384",
-		HS512 = "HmacSHA512"
-		// NOTE: These are currently commented-out because they are are not supported by this 
-		// component. RSA is only available in Enterprise-level ColdFusion instances. I am 
-		// keeping them here for future-compatibility and documentation.
+	mapToJwtAlgorithm = {
+		HmacSHA256 = "HS256",
+		HmacSHA384 = "HS384",
+		HmacSHA512 = "HS512",
+		SHA256withRSA = "RS256",
+		SHA384withRSA = "RS384",
+		SHA512withRSA = "RS512"
 		// --
-		// RS256 = "SHA256withRSA",
-		// RS384 = "SHA384withRSA",
-		// RS512 = "SHA512withRSA",
-		// ES256 = "SHA256withECDSA",
-		// ES384 = "SHA384withECDSA",
-		// ES512 = "SHA512withECDSA"
+		// Not yet supported. 
+		// --
+		// SHA256withECDSA = "ES256",
+		// SHA384withECDSA = "ES384",
+		// SHA512withECDSA = "ES512"
 	};
 
 
 	/**
-	* I initialize the JSON Web Tokens client with the given key and algorithm.
+	* I initialize the JSON Web Tokens client with the given signer.
 	* 
 	* @jsonEncoder I am the JSON encoding utility.
 	* @base64urlEncoder I am the base64url encoding utility.
-	* @key I am the key used to sign and verify payloads.
-	* @algorithm I am the signing algorithm to be used when signing.
+	* @signer I am the secure message signer and verifier.
 	* @output false
 	*/
 	public any function init(
 		required any jsonEncoder,
 		required any base64urlEncoder,
-		required string key,
-		required string algorithm
+		required any signer
 		) {
 
 		// Store the private variables.
 		setJsonEncoder( jsonEncoder );
 		setBase64urlEncoder( base64urlEncoder );
-		setKey( key );
-		setAlgorithm( algorithm );
+		setSigner( signer );
 
 		return( this );
 
@@ -70,50 +65,23 @@ component
 		var payloadSegment = segments[ 2 ];
 		var signatureSegment = segments[ 3 ];
 
-		// Parse the data segments.
-		var header = parseHeaderSegment( headerSegment );
-		var payload = parsePayloadSegment( payloadSegment );
+		// CAUTION: We never use the algorithm defined in the header. Not only can we
+		// not be sure that we have the appropriate signer, we also open ourselves up
+		// to potential abuse. As such, the client will always use the predefined, 
+		// internal signer when verifying the signature.
 
-		// By default, we'll use the client-specific algorithm.
-		var algorithmForDecoding = algorithm;
-
-		// However, if an algorithm was supplied in the header, use that one instead.
-		if ( structKeyExists( header, "alg" ) ) {
-
-			algorithmForDecoding = header.alg;
-
-			try {
-
-				testAlgorithm( algorithmForDecoding );
-				
-			} catch ( any error ) {
-
-				throw(
-					type = "JsonWebTokens.InvalidAlgorithm",
-					message = "The algorithm supplied by the header is not supported.",
-					detail = "The header specified the algorithm [#algorithmForDecoding#] which is not currently supported.",
-					extendedInfo = "JSON Web Token: [#token#]."
-				);
-
-			}
-
-		}
-
-		// Validate that signature is correct before we return payload.
-		var expectedSignatureSegment = generateSignatureSegment( headerSegment, payloadSegment, algorithms[ algorithmForDecoding ] );
-		
-		if ( signatureSegment != expectedSignatureSegment ) {
+		if ( ! verifySignatureSegment( headerSegment, payloadSegment, signatureSegment ) ) {
 
 			throw(
 				type = "JsonWebTokens.SignatureMismatch",
 				message = "The JSON Web Token signature is invalid.",
-				detail = "The given JSON Web Token signature [#signatureSegment#] does not match the expected signature [#expectedSignatureSegment#].",
+				detail = "The given JSON Web Token signature [#signatureSegment#] could not be verified by the signer.",
 				extendedInfo = "JSON Web Token: [#token#]."
 			);
 
 		}
 
-		return( payload );
+		return( parsePayloadSegment( payloadSegment ) );
 
 	}
 
@@ -129,33 +97,16 @@ component
 		// I am the standardized header for a secured JSON Web Token.
 		var header = {
 			"typ" = "JWT",
-			"alg" = ucase( algorithm )
+			"alg" = mapToJwtAlgorithm[ signer.getAlgorithm() ]
 		};
 
 		// Generate segments of the token.
 		var headerSegment = generateHeaderSegment( header );
 		var payloadSegment = generatePayloadSegment( payload );
-		var signatureSegment = generateSignatureSegment( headerSegment, payloadSegment, algorithms[ algorithm ] );
+		var signatureSegment = generateSignatureSegment( headerSegment, payloadSegment );
 
 		// Return the JSON web token.
 		return( headerSegment & "." & payloadSegment & "." & signatureSegment );
-
-	}
-
-
-	/**
-	* I set the algorithm being used to used to generate the signature. Returns [this].
-	* 
-	* @newKey I am the new algorithm being used by the hasher.
-	* @output false
-	*/
-	public any function setAlgorithm( required string newAlgorithm ) {
-
-		testAlgorithm( newAlgorithm );
-
-		algorithm = newAlgorithm;
-
-		return( this );
 
 	}
 
@@ -192,61 +143,16 @@ component
 
 
 	/**
-	* I set the secret key being used to sign the message. Returns [this].
+	* I set the message signer and verifier. Returns [this].
 	* 
-	* @newKey I am the new secret key.
+	* @newSigner I am the new message signer.
 	* @output false
 	*/
-	public any function setKey( required string newKey ) {
+	public any function setSigner( required any newSigner ) {
 
-		testKey( newKey );
-
-		key = newKey;
+		signer = newSigner;
 
 		return( this );
-
-	}
-
-
-	/**
-	* I test the given algorithm to make sure it is valid (and supported by the current
-	* implementation). If the algorithm is not valid, I throw an error.
-	* 
-	* @newAlgorithm I am the new algorithm being tested.
-	* @output false
-	*/
-	public void function testAlgorithm( required string newAlgorithm ) {
-
-		if ( ! structKeyExists( algorithms, newAlgorithm ) ) {
-
-			throw(
-				type = "JsonWebTokens.InvalidAlgorithm",
-				message = "The JSON Web Token algorithm is not supported.",
-				detail = "The algorithm [#newAlgorithm#] is not currently supported."
-			);
-
-		}
-
-	}
-
-
-	/**
-	* I test the given secret key to make sure it is valid. If the key is not valid,
-	* I throw an error.
-	* 
-	* @newKey I am the new key being tested.
-	* @output false
-	*/
-	public void function testKey( required string newKey ) {
-
-		if ( ! len( newKey ) ) {
-
-			throw(
-				type = "JsonWebTokens.InvalidKey",
-				message = "The secret key cannot be empty."
-			);
-
-		}
 
 	}
 
@@ -287,47 +193,21 @@ component
 
 
 	/**
-	* I generate the signature for the given portions of the token. The signature is returned
-	* as a base64url-encoded string.
+	* I generate the signature for the given portions of the token. The signature is 
+	* returned as a base64url-encoded string.
 	* 
 	* @header I am the serialized header.
 	* @payload I am the serialized payload.
-	* @algorithm I am the name of the Java cryptography / hashing algorithm to use.
 	* @output false
 	*/
 	private string function generateSignatureSegment(
 		required string header,
-		required string payload,
-		required string hmacAlgorithm
+		required string payload
 		) {
 
-		var mac = createObject( "java", "javax.crypto.Mac" ).getInstance( javaCast( "string", hmacAlgorithm ) );
-
-		mac.init(
-			createObject( "java", "javax.crypto.spec.SecretKeySpec" ).init(
-				charsetDecode( key, "utf-8" ),
-				javaCast( "string", hmacAlgorithm )
-			)
-		);
-
-		var hashedBytes = mac.doFinal( charsetDecode( "#header#.#payload#", "utf-8" ) );
+		var hashedBytes = signer.sign( charsetDecode( "#header#.#payload#", "utf-8" ) );
 
 		return( base64urlEncoder.encodeBytes( hashedBytes ) );
-
-	}
-
-
-	/**
-	* I parse the header segment of the token, returning the deserialized header.
-	* 
-	* @header I am the header to be parse.
-	* @output false
-	*/
-	private struct function parseHeaderSegment( required string header ) {
-
-		var serializedHeader = base64urlEncoder.decode( header );
-
-		return( jsonEncoder.decode( serializedHeader ) );
 
 	}
 
@@ -343,6 +223,32 @@ component
 		var serializedPayload = base64urlEncoder.decode( payload );
 
 		return( jsonEncoder.decode( serializedPayload ) );
+
+	}
+
+
+	/**
+	* I verify that the given signature was produced by the given message segments.
+	* 
+	* @header I am the base64url-encoded header segment.
+	* @payload I am the base64url-encoded payload segment.
+	* @signature I am the base64url-encoded signature segment.
+	* @output false
+	*/
+	private string function verifySignatureSegment(
+		required string header,
+		required string payload,
+		required string signature
+		) {
+
+		var base64Signature = base64urlEncoder.convertToBase64( signature );
+
+		return(
+			signer.verify(
+				charsetDecode( "#header#.#payload#", "utf-8" ),
+				binaryDecode( base64Signature, "base64" )
+			)
+		);
 
 	}
 

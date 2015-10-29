@@ -3,8 +3,23 @@ component
 	hint = "I provide a ColdFusion gateway for creating and consuming JSON Web Tokens (JWT)."
 	{
 
-	// If the user doesn't provide an algorithm, we'll use this one by default.
-	DEFAULT_ALGORITHM = "HS256";
+	// I map the common JWT algorithm names onto the underlying Java algorithm names.
+	// --
+	// Read More: http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html
+	mapToJavaAlgorithm = {
+		HS256 = "HmacSHA256",
+		HS384 = "HmacSHA384",
+		HS512 = "HmacSHA512",
+		RS256 = "SHA256withRSA",
+		RS384 = "SHA384withRSA",
+		RS512 = "SHA512withRSA"
+		// --
+		// Not yet supported. 
+		// --
+		// ES256 = "SHA256withECDSA",
+		// ES384 = "SHA384withECDSA",
+		// ES512 = "SHA512withECDSA"
+	};
 
 
 	/**
@@ -26,24 +41,55 @@ component
 
 
 	/**
-	* I create a JSON Web Token client with the default utility components and the given 
-	* secret key. The client can then be used to encode() and decode() JWT values.
+	* I create a JSON Web Token client that can encode() and decode() JWT values. If the
+	* algorithm is an Hmac-based algorithm, only the secret key is required. If the 
+	* algorithm is an RSA-based algorithm, both the public and private keys are required
+	* (and assumed to be in PEM format).
 	* 
-	* @key I am the secret key used to encode and decode the payloads.
-	* @algorithm I am the algorithm to be used when signing and verifying the payloads.
+	* @algorithm I am the Hmac algorithm to be used when signing and verifying the payloads.
+	* @key If the algorithm is Hmac, I am the secret key. If RSA, I am the public key in PEM format.
+	* @privateKey If the algorithm is RSA, I am the private key in PEM format.
 	* @output false
 	*/
 	public any function createClient( 
+		required string algorithm,
 		required string key,
-		string algorithm = DEFAULT_ALGORITHM
+		string privateKey
 		) {
 
-		var client = new client.JsonWebTokensClient(
-			new encode.JsonEncoder(),
-			new encode.Base64urlEncoder(),
-			key,
-			algorithm
-		);
+		switch ( algorithm ) {
+			case "HS256":
+			case "HS384":
+			case "HS512":
+
+				var client = new client.JsonWebTokensClient(
+					new encode.JsonEncoder(),
+					new encode.Base64urlEncoder(),
+					new sign.HmacSigner( mapToJavaAlgorithm[ algorithm ], key )
+				);
+
+			break;
+			case "RS256":
+			case "RS384":
+			case "RS512":
+
+				var client = new client.JsonWebTokensClient(
+					new encode.JsonEncoder(),
+					new encode.Base64urlEncoder(),
+					new sign.RSASigner( mapToJavaAlgorithm[ algorithm ], key, privateKey )
+				);
+
+			break;
+			default:
+
+				throw(
+					type = "JsonWebTokens.InvalidAlgorithm",
+					message = "The given algorithm is not supported.",
+					detail = "No client can be created for the given algorithm [#algorithm#] as it is not supported."
+				);
+
+			break;
+		}
 
 		return( client );
 
@@ -58,17 +104,19 @@ component
 	* this one-off method.
 	* 
 	* @token I am the JSON Web Token being decoded.
-	* @key I am the shared secret key that was used for the encoding.
-	* @algorithm I am the algorithm to be used if no algorithm is present in the header.
+	* @algorithm I am the algorithm to be used to verify the signature.
+	* @key If the algorithm is Hmac, I am the secret key. If RSA, I am the public key in PEM format.
+	* @privateKey If the algorithm is RSA, I am the private key in PEM format.
 	* @output false
 	*/
 	public struct function decode(
 		required string token,
+		required string algorithm,
 		required string key,
-		string algorithm = DEFAULT_ALGORITHM
+		string privateKey = ""
 		) {
 
-		return( createClient( key, algorithm ).decode( token ) );
+		return( createClient( algorithm, key, privateKey ).decode( token ) );
 		
 	}
 
@@ -81,17 +129,19 @@ component
 	* this one-off method.
 	* 
 	* @payload I am the payload being encoded for transport.
-	* @key I am the shared secret key for encoding.
 	* @algorithm I am the algorithm to be used to generate the signature.
+	* @key If the algorithm is Hmac, I am the secret key. If RSA, I am the public key in PEM format.
+	* @privateKey If the algorithm is RSA, I am the private key in PEM format.
 	* @output false
 	*/
 	public string function encode(
 		required struct payload,
+		required string algorithm,
 		required string key,
-		string algorithm = DEFAULT_ALGORITHM
+		string privateKey = ""
 		) {
 
-		return( createClient( key, algorithm ).encode( payload ) );
+		return( createClient( algorithm, key, privateKey ).encode( payload ) );
 
 	}
 
