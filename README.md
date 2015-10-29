@@ -66,7 +66,7 @@ jwt.decode( jwtToken, "RS256", "publicKey", "privateKey" );
 When using the RSA encryption algorithm, the public and private keys are assumed to be
 provided in plain-text PEM format.
 
-_*NOTE*: PEM (Privacy Enhanced Mail) format is a Base64 encoded DER certificate commonly 
+_**NOTE**: PEM (Privacy Enhanced Mail) format is a Base64 encoded DER certificate commonly 
 used on servers._
 
 The JSON Web Token library prevent anonymous / pre-verified tokens, and for security 
