@@ -62,7 +62,7 @@ component
 			case "HS384":
 			case "HS512":
 
-				var client = new client.JsonWebTokensClient(
+				var jwtClient = new client.JsonWebTokensClient(
 					new encode.JsonEncoder(),
 					new encode.Base64urlEncoder(),
 					new sign.HmacSigner( mapToJavaAlgorithm[ algorithm ], key )
@@ -73,7 +73,7 @@ component
 			case "RS384":
 			case "RS512":
 
-				var client = new client.JsonWebTokensClient(
+				var jwtClient = new client.JsonWebTokensClient(
 					new encode.JsonEncoder(),
 					new encode.Base64urlEncoder(),
 					new sign.RSASigner( mapToJavaAlgorithm[ algorithm ], key, privateKey )
@@ -91,7 +91,7 @@ component
 			break;
 		}
 
-		return( client );
+		return( jwtClient );
 
 	}
 
