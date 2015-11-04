@@ -6,7 +6,7 @@ component
 
 	public void function test_that_the_client_works() {
 
-		var client = new lib.JsonWebTokens().createClient( "HS256", "secret" );
+		var jwtClient = new lib.JsonWebTokens().createClient( "HS256", "secret" );
 
 		// NOTE: Values pulled from http://jwt.io/
 		var payload = {
@@ -18,8 +18,8 @@ component
 		// NOTE: Because we the order of the serialized keys affects the token, it's hard 
 		// to consistently test the encoded value. But, we can test the full life-cycle 
 		// and ensure that the decoded value matches the original input.
-		var token = client.encode( payload );
-		var newPayload = client.decode( token );
+		var token = jwtClient.encode( payload );
+		var newPayload = jwtClient.decode( token );
 
 		assert( payload.sub == newPayload.sub );
 		assert( payload.name == newPayload.name );
@@ -118,7 +118,7 @@ component
 		// Try it for each supported algorithm.
 		for ( algorithm in algorithms ) {
 
-			var client = new lib.JsonWebTokens().createClient( algorithm, "secret" );
+			var jwtClient = new lib.JsonWebTokens().createClient( algorithm, "secret" );
 
 			var payload = {
 				"id": 4,
@@ -134,8 +134,8 @@ component
 			// NOTE: Because we the order of the serialized keys affects the token, it's hard 
 			// to consistently test the encoded value. But, we can test the full life-cycle 
 			// and ensure that the decoded value matches the original input.
-			var token = client.encode( payload );
-			var newPayload = client.decode( token );
+			var token = jwtClient.encode( payload );
+			var newPayload = jwtClient.decode( token );
 
 			assert( payload.id == newPayload.id );
 			assert( payload.name == newPayload.name );
@@ -158,7 +158,7 @@ component
 		// Try it for each supported algorithm.
 		for ( algorithm in algorithms ) {
 
-			var client = new lib.JsonWebTokens().createClient( algorithm, getPublicKey(), getPrivateKey() );
+			var jwtClient = new lib.JsonWebTokens().createClient( algorithm, getPublicKey(), getPrivateKey() );
 
 			var payload = {
 				"id": 4,
@@ -174,8 +174,8 @@ component
 			// NOTE: Because we the order of the serialized keys affects the token, it's hard 
 			// to consistently test the encoded value. But, we can test the full life-cycle 
 			// and ensure that the decoded value matches the original input.
-			var token = client.encode( payload );
-			var newPayload = client.decode( token );
+			var token = jwtClient.encode( payload );
+			var newPayload = jwtClient.decode( token );
 
 			assert( payload.id == newPayload.id );
 			assert( payload.name == newPayload.name );
@@ -193,14 +193,14 @@ component
 
 	public void function test_complex_data_with_hmac_decoding() {
 
-		var client = new lib.JsonWebTokens().createClient( "HS256", "secret" );
+		var jwtClient = new lib.JsonWebTokens().createClient( "HS256", "secret" );
 
 		// NOTE: Because we the order of the serialized keys affects the token, it's hard 
 		// to consistently test the encoded value. But, we can test that the decoded value
 		// matches a known encoded token.
 		// --
 		// Signature validated on http://jwt.io/
-		var newPayload = client.decode( "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwibmFtZSI6IktpbSBTbWl0aCIsImxpa2VzIjpbIk1vdmllcyIsIldhbGtzIiwiRm9vZCJdLCJzdHJlbmd0aHMiOnsia2luZG5lc3MiOjcsInF1aXJraW5lc3MiOjksImZ1biI6MTB9fQ.QKkMlaC0mSCryIwcmI7sIJ_WfY6n0a8DmkjJYajk100" );
+		var newPayload = jwtClient.decode( "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwibmFtZSI6IktpbSBTbWl0aCIsImxpa2VzIjpbIk1vdmllcyIsIldhbGtzIiwiRm9vZCJdLCJzdHJlbmd0aHMiOnsia2luZG5lc3MiOjcsInF1aXJraW5lc3MiOjksImZ1biI6MTB9fQ.QKkMlaC0mSCryIwcmI7sIJ_WfY6n0a8DmkjJYajk100" );
 
 		var expectedPayload = {
 			"id": 4,
@@ -227,14 +227,14 @@ component
 
 	public void function test_complex_data_with_rsa_decoding() {
 
-		var client = new lib.JsonWebTokens().createClient( "RS256", getPublicKey(), getPrivateKey() );
+		var jwtClient = new lib.JsonWebTokens().createClient( "RS256", getPublicKey(), getPrivateKey() );
 
 		// NOTE: Because we the order of the serialized keys affects the token, it's hard 
 		// to consistently test the encoded value. But, we can test that the decoded value
 		// matches a known encoded token.
 		// --
 		// Signature validated on http://jwt.io/
-		var newPayload = client.decode( "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwibmFtZSI6IktpbSBTbWl0aCIsImxpa2VzIjpbIk1vdmllcyIsIldhbGtzIiwiRm9vZCJdLCJzdHJlbmd0aHMiOnsia2luZG5lc3MiOjcsInF1aXJraW5lc3MiOjksImZ1biI6MTB9fQ.kFz_oLiiM5VRlqX-5XidsnDDB7R5IYyxTf87mMyYRpOop2mMrqVQFiKULaZDjQGYB_MKuJLQv2ocmUSbUWXqcpZC__amORjIW-8lTMwtNQM3vDQhQcvmCfU31hQeznxoI6_0u1WEqcuArANZXc7guM66rSS9j48AevhvPFgI79Q" );
+		var newPayload = jwtClient.decode( "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwibmFtZSI6IktpbSBTbWl0aCIsImxpa2VzIjpbIk1vdmllcyIsIldhbGtzIiwiRm9vZCJdLCJzdHJlbmd0aHMiOnsia2luZG5lc3MiOjcsInF1aXJraW5lc3MiOjksImZ1biI6MTB9fQ.kFz_oLiiM5VRlqX-5XidsnDDB7R5IYyxTf87mMyYRpOop2mMrqVQFiKULaZDjQGYB_MKuJLQv2ocmUSbUWXqcpZC__amORjIW-8lTMwtNQM3vDQhQcvmCfU31hQeznxoI6_0u1WEqcuArANZXc7guM66rSS9j48AevhvPFgI79Q" );
 
 		var expectedPayload = {
 			"id": 4,
