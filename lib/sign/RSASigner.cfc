@@ -5,16 +5,16 @@ component
 
 	/**
 	* I create a new RSA Signer using the given algorithm and public and private keys.
-	* 
+	*
 	* NOTE: The algorithm uses the names provided in the Java Cryptography Architecture
-	* Standard Algorithm Name documentation: 
-	* 
+	* Standard Algorithm Name documentation:
+	*
 	* - SHA256withRSA
 	* - SHA384withRSA
 	* - SHA512withRSA
-	* 
+	*
 	* CAUTION: The keys are assumed to be in PEM format.
-	* 
+	*
 	* @algorithm I am the RSA-based signature algorithm being used.
 	* @publicKey I am the plain-text public key.
 	* @privateKey I am the plain-text private key.
@@ -42,14 +42,14 @@ component
 
 	/**
 	* I add the BounceCastleProvider to the underlying crypto APIs.
-	* 
+	*
 	* CAUTION: I don't really understand why this is [sometimes] required. But, if you
 	* run into the error, "Invalid RSA private key encoding.", adding BouncyCastle may
 	* solve the problem.
-	* 
-	* This method only needs to be called once per ColdFusion application life-cycle. 
+	*
+	* This method only needs to be called once per ColdFusion application life-cycle.
 	* But, it can be called multiple times without error.
-	* 
+	*
 	* @output false
 	*/
 	public void function addBouncyCastleProvider() {
@@ -68,7 +68,7 @@ component
 
 	/**
 	* I get the current algorithm name.
-	* 
+	*
 	* @output false
 	*/
 	public string function getAlgorithm() {
@@ -80,14 +80,14 @@ component
 
 	/**
 	* I set the given RSA algorithm. Returns [this].
-	* 
+	*
 	* NOTE: The algorithm uses the names provided in the Java Cryptography Architecture
-	* Standard Algorithm Name documentation: 
-	* 
+	* Standard Algorithm Name documentation:
+	*
 	* - SHA256withRSA
 	* - SHA384withRSA
 	* - SHA512withRSA
-	* 
+	*
 	* @newAlgorithm I am the RSA-based signature algorithm being set.
 	* @output false
 	*/
@@ -104,9 +104,9 @@ component
 
 	/**
 	* I set the public key using the plain-text public key content. Returns [this].
-	* 
+	*
 	* NOTE: Keys are expected to be in PEM format.
-	* 
+	*
 	* @newPublicKeyText I am the plain-text public key.
 	* @output false
 	*/
@@ -114,14 +114,15 @@ component
 
 		testKey( newPublicKeyText );
 
-		var publicKeySpec = createObject( "java", "java.security.spec.X509EncodedKeySpec" ).init(
-			binaryDecode( stripKeyDelimiters( newPublicKeyText ), "base64" )
-		);
+		var binaryPublicKey = binaryDecode( stripKeyDelimiters( newPublicKeyText ), "base64" );
 
-		publicKey = createObject( "java", "java.security.KeyFactory" )
-			.getInstance( javaCast( "string", "RSA" ) )
-			.generatePublic( publicKeySpec )
-		;
+		var bis = createObject("java", "java.io.ByteArrayInputStream").init(binaryPublicKey);
+
+		var certificate = createObject("java", "java.security.cert.CertificateFactory")
+			.getInstance( javaCast( "string", "X509" ) )
+			.generateCertificate(bis);
+
+		publicKey = certificate.getPublicKey();
 
 		return( this );
 
@@ -130,9 +131,9 @@ component
 
 	/**
 	* I set the private key using the plain-text private key content. Returns [this].
-	* 
+	*
 	* NOTE: Keys are expected to be in PEM format.
-	* 
+	*
 	* @newPrivateKeyText I am the plain-text private key.
 	* @output false
 	*/
@@ -156,7 +157,7 @@ component
 
 	/**
 	* I test the given algorithm. If the algorithm is not valid, I throw an error.
-	* 
+	*
 	* @newAlgorithm I am the new RSA algorithm being tested.
 	* @output false
 	*/
@@ -166,7 +167,7 @@ component
 			case "SHA256withRSA":
 			case "SHA384withRSA":
 			case "SHA512withRSA":
-				return;	
+				return;
 			break;
 		}
 
@@ -175,13 +176,13 @@ component
 			message = "The given algorithm is not supported.",
 			detail = "The given algorithm [#newAlgorithm#] is not supported."
 		);
-		
+
 	}
 
 
 	/**
 	* I test the given key (public or private). If the key is not valid, I throw an error.
-	* 
+	*
 	* @newKey I am the new key being tested.
 	* @output false
 	*/
@@ -201,7 +202,7 @@ component
 
 	/**
 	* I sign the given binary message using the current algorithm and private key.
-	* 
+	*
 	* @message I am the message being signed.
 	* @output false
 	*/
@@ -221,7 +222,7 @@ component
 
 	/**
 	* I verify that the given signature was generated from the given message.
-	* 
+	*
 	* @message I am the binary message input.
 	* @signature I am the binary signature being verified.
 	* @output false
@@ -250,7 +251,7 @@ component
 
 	/**
 	* I strip the plain-text key delimiters, to isolate the key content.
-	* 
+	*
 	* @keyText I am the plain-text key input.
 	* @output false
 	*/
@@ -258,6 +259,9 @@ component
 
 		// Strips out the leading / trailing boundaries:
 		keyText = reReplace( keyText, "-----(BEGIN|END)[^\r\n]+", "", "all" );
+
+		// Strips out newline characters
+		keyText = reReplace( keyText, "[\r\n]", "", "all" );
 
 		return( trim( keyText ) );
 
