@@ -162,7 +162,7 @@ component
 		var expectedSignature = sign( message );
 
 		// Compare the two binary values using a quick hash.
-		return( hash( signature ) == hash( expectedSignature ) );
+		return( hash( toString( signature ) ) == hash( toString( expectedSignature ) ) );
 
 	}
 
